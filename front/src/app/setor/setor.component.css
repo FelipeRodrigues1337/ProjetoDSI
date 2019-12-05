@@ -1,0 +1,65 @@
+h1{
+    color: #3E444A;
+}
+.card{
+    padding: 15pt;
+}
+
+.btn-search{
+    background-color: #425f94;
+    color: #ffffff;
+}
+
+.search{
+    float: right;
+}
+input.inline{
+    width: 100%;
+
+}
+.left{
+    padding-left: 0;
+}
+.right{
+    padding-right: 0;
+}
+.txtLeft{
+    text-align: left;
+}
+
+.btn-select{
+    width: 100%;
+    background-color: #ffffff;
+    border: solid 1px #ccc;
+}
+.btn-type{
+    background-color: #ffffff;
+    border: solid 1px #ccc;
+}
+
+.ng-valid[required], .ng-valid.required{
+    border-left: 15px solid #42A948; /* green */
+}
+
+.shadow{
+ box-shadow: inset 40px 40px 40px 40px #1098AD;
+ box-shadow: 1px 1px 1px 1px #0D7A8A;
+}
+
+.displayColor{
+ background-color:#343A40;
+ color: white;
+}
+
+.modalColor{
+ background-color: white;
+}
+
+.tableStyle{
+    border-radius: 10px;
+}
+
+thead{
+    background-color: #272b30;
+    color: white;
+}

@@ -1,0 +1,118 @@
+<div class="container ">
+  <div class="row my-1">
+    <header class="col-lg-12 col-md-12 col-sm-12 left">
+      <h1>Clientes</h1>
+    </header>
+  </div>
+  <!--CORPO/TABELA-->
+  <section *ngIf="!display && !displayUp ">
+    <div class="row">
+      <div class="col left">
+        <button type="button" class="btn btn-success" (click)="onDisplayCliente('e')" (click)="onDisplay()"><i
+            class="fas fa-user-plus "></i> Adicionar</button>
+      </div>
+      <div class="col right">
+        <form class="form-inline search" #p="ngForm" (ngSubmit)="onSubmit(p)">
+          <input class="form-control mr-sm-2" type="search" name="searcher" [(ngModel)]="buscarNome" placeholder="Buscar Cliente" aria-label="Buscar" ngModel>
+          <i class="fas fa-search"></i>
+        </form>
+      </div>
+    </div>
+    <div class="row">
+      <table class="table col-lg-12 col-md-12 col-sm-12 table-dark my-1 tableStyle">
+        <thead>
+          <tr>
+            <th scope="col" class="col-lg-3 col-sm-3">Nome</th>
+            <th scope="col" class="">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let cliente of Cliente | searcherClient: buscarNome">
+            <td class="col-lg-3 col-sm-3">{{ cliente.nome }}</td>
+            <td class="col-lg-3 col-sm-3">
+              <div class="btn-group" role="group" aria-label="actions">
+                <button type="button" class="btn btn-light" (click)="onDisplayUp()" (click)="select(cliente)"><i
+                    class="far fa-edit"></i></button>
+                <button type="button" class="btn btn-light" data-toggle="modal" data-target="#delete"
+                  (click)="select(cliente)"><i class="far fa-trash-alt"></i></button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <!--Modal Excluir-->
+  <div class="modal fade" role="dialog" id="delete">
+    <div class="modal-dialog modal-md" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Excluir Cliente</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Tem certeza que deseja excluir este Cliente?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="deleteCliente()">Excluir</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" data-target="salvo">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--Display de Adição-->
+  <section *ngIf="display">
+    <div class="row">
+      <div class="col-lg-12 col-md-12 my-3">
+        <div class="card">
+          <form #p="ngForm" (ngSubmit)="onSubmit(p)">
+            <div class="modal-header displayColor">
+              <h5 class="modal-title">Adicionar Cliente</h5>
+            </div>
+            <div class="modal-body">
+              <div class="form-group col-lg-6 right">
+                <input type="text" class="form-control" [ngClass]="{'border-danger': name_valid}"
+                  (change)="name_valid = false" name="nome" required ngModel #nome="ngModel"
+                  aria-describedby="nome" placeholder="Informe o nome do cliente">
+                <p *ngIf="name_valid" class="text-danger">Preencha o campo</p>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-success"><i class="far fa-save"></i> Salvar</button>
+          </form>
+        </div>
+        <button class="btn btn-light col-lg-1" (click)="onDisplay()">
+          <i class="fas fa-angle-left"></i>Voltar
+        </button>
+      </div>
+    </div>
+  </section>
+  <!--Display de Atualização-->
+  <section *ngIf="displayUp">
+    <div class="row">
+      <div class="col-lg-12 col-md-12 my-3">
+        <div class="card">
+          <form #b="ngForm" (ngSubmit)="updateCliente(b)">
+            <div class="modal-header displayColor">
+              <h5 class="modal-title">Editar Cliente</h5>
+            </div>
+            <div class="modal-body" *ngIf="ClienteBase">
+              <div class="form-group col-lg-6 right">
+                <input type="text" class="form-control" name="nome" [(ngModel)]="ClienteBase.nome"
+                  [ngClass]="{'border-danger': att_nameValidation}" (change)="att_nameValidation = false" required
+                  ngModel #nome="ngModel" id="edit" aria-describedby="editar" placeholder="Informe o cliente">
+                <p *ngIf="att_nameValidation" class="text-danger">Preencha o campo</p>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-success"><i class="far fa-save"></i> Salvar</button>
+          </form>
+        </div>
+        <button class="btn btn-light col-lg-1" (click)="onDisplayUp()">
+          <i class="fas fa-angle-left"></i>Voltar
+        </button>
+      </div>
+    </div>
+  </section>
+  <!--/DIV CONTAINER-->
+</div>

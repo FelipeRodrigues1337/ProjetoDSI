@@ -1,0 +1,178 @@
+<div class="container">
+  <div class="row my-1">
+    <header class="col-lg-12 col-md-12 col-sm-12 left">
+      <h1>Maquinas</h1>
+    </header>
+  </div>
+  <!--CORPO/TABELA-->
+  <section *ngIf="!display && !displayUp ">
+    <div class="row">
+      <div class="col left">
+        <button type="button" class="btn btn-success" (click)="onDisplayMaquina('e')" (click)="onDisplay()"><i
+            class="fas fa-user-plus "></i> Adicionar</button>
+      </div>
+      <div class="col right">
+        <form autocomplete="off" class="form-inline search">
+          <input class="form-control mr-sm-2" [(ngModel)]="buscaTmaquina" name="color" id="color" list="colors"
+            placeholder="Identificador"><i class="fas fa-search"></i>
+        </form>
+        <datalist id="colors">
+          <option *ngFor="let maquina of Maquina" value="{{maquina.identificador}}">
+            {{maquina.identificador}}
+          </option>
+        </datalist>
+      </div>
+    </div>
+    <div class="row">
+      <table class="table col-lg-12 col-md-12 col-sm-12 table-dark my-1 tableStyle">
+        <thead>
+          <tr>
+            <th scope="col">Inf.Gabinete</th>
+            <th scope="col">Identificador</th>
+            <th scope="col">Setor</th>
+            <th scope="col">Cliente/Responsável</th>
+            <th scope="col" class="">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let maquina of Maquina | searcher_maquina: buscaTmaquina">
+            <td class="">{{ maquina.gabinete }}</td>
+            <td class="">{{ maquina.identificador }}</td>
+            <td class="">{{ maquina.nomeSetor }}</td>
+            <td class="">{{ maquina.nomeCliente }}</td>
+            <td class="">
+              <div class="btn-group" role="group" aria-label="actions">
+                <button type="button" class="btn btn-light" (click)="onDisplayUp()" (click)="select(maquina)"><i
+                    class="far fa-edit"></i></button>
+                <button type="button" class="btn btn-light" data-toggle="modal" data-target="#delete"
+                  (click)="select(maquina)"><i class="far fa-trash-alt"></i></button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <!--Modal Excluir-->
+  <div class="modal fade" role="dialog" id="delete">
+    <div class="modal-dialog modal-md" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Excluir Cliente</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Tem certeza que deseja excluir esta Maquina?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="deleteMaquina()">Excluir</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" data-target="salvo">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--Display de Adição-->
+  <section *ngIf="display">
+    <div class="row">
+      <div class="col-lg-12 col-md-12 my-3">
+        <div class="card">
+          <form #p="ngForm" (ngSubmit)="onSubmit(p)">
+            <div class="modal-header displayColor">
+              <h5 class="modal-title">Adicionar Maquina</h5>
+            </div>
+            <div class="modal-body">
+              <div class="form-group col-lg-6 right">
+                <input type="text" class="form-control" [ngClass]="{'border-danger': name_valid}"
+                  (change)="name_valid = false" name="cliente" required ngModel #cliente="ngModel"
+                  aria-describedby="cliente" placeholder="Informe o nome do responsável">
+                <p *ngIf="name_valid" class="text-danger">Preencha o campo</p>
+              </div>
+              <div class="form-group col-lg-6 right">
+                <input type="text" class="form-control" [ngClass]="{'border-danger': gabinete_valid}"
+                  (change)="gabinete_valid = false" name="gabinete" required ngModel #gabinete="ngModel"
+                  aria-describedby="gabinete" placeholder="Informe o gabinete">
+                <p *ngIf="gabinete_valid" class="text-danger">Preencha o campo</p>
+              </div>
+              <div class="form-group col-lg-6 right">
+                <input type="text" class="form-control" [ngClass]="{'border-danger': identificador_Valid}"
+                  (change)="identificador_Valid = false" name="identificador" required ngModel #identificador="ngModel"
+                  aria-describedby="identificador" placeholder="Informe o identificador da maquina">
+                <p *ngIf="identificador_Valid" class="text-danger">Preencha o campo</p>
+              </div>
+              <div class="form-group col-lg-6 right">
+                <select class="btn btn-select" [ngClass]="{'border-danger': setor_id_setor_valid}"
+                  (change)="setor_id_setor_valid = false" name="setor_id_setor" required ngModel
+                  #setor_id_setor="ngModel">
+                  <option value="" disabled selected>Selecione um setor</option>
+                  <option *ngFor="let C of Setor" value="{{C.id_setor}}">
+                    {{C.nome_setor}}
+                  </option>
+                </select>
+                <p *ngIf="setor_id_setor_valid" class="text-danger">Preencha o campo</p>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-success"><i class="far fa-save"></i> Salvar</button>
+          </form>
+        </div>
+        <button class="btn btn-light col-lg-1" (click)="onDisplay()">
+          <i class="fas fa-angle-left"></i>Voltar
+        </button>
+      </div>
+    </div>
+  </section>
+  <!--Display de Atualização-->
+  <section *ngIf="displayUp">
+    <div class="row">
+      <div class="col-lg-12 col-md-12 my-3">
+        <div class="card">
+          <form #b="ngForm" (ngSubmit)="updateMaquina(b)">
+            <div class="modal-header displayColor">
+              <h5 class="modal-title">Editar Maquina</h5>
+            </div>
+            <div class="modal-body" *ngIf="MaquinaBase">
+              <div class="form-group col-lg-6 right">
+                <input type="text" class="form-control" name="nomeCliente" [(ngModel)]="MaquinaBase.nomeCliente"
+                  [ngClass]="{'border-danger': att_nomeCliente_valid}" (change)=" att_nomeCliente_valid = false" required
+                  ngModel #nomeCliente="ngModel" id="nomeCliente" aria-describedby="editar"
+                  placeholder="Informe o nome do responsável">
+                <p *ngIf="att_nomeCliente_valid" class="text-danger">Preencha o campo</p>
+              </div>
+              <div class="form-group col-lg-6 right">
+                <input type="text" class="form-control" name="att_gabinete" [(ngModel)]="MaquinaBase.gabinete"
+                  [ngClass]="{'border-danger': att_gabinete_valid}" (change)=" att_gabinete_valid = false" required
+                  ngModel #att_gabinete="ngModel" id="att_gabinete" aria-describedby="editar"
+                  placeholder="Informe o gabinete">
+                <p *ngIf="att_gabinete_valid" class="text-danger">Preencha o campo</p>
+              </div>
+              <div class="form-group col-lg-6 right">
+                <input type="text" class="form-control" name="identificador" [(ngModel)]="MaquinaBase.identificador"
+                  [ngClass]="{'border-danger': att_identificador_valid}" (change)="att_identificador_valid = false"
+                  required ngModel #identificador="ngModel" id="editIdentificador" aria-describedby="editarID"
+                  placeholder="Identificador da maquina">
+                <p *ngIf="att_identificador_valid" class="text-danger">Preencha o campo</p>
+              </div>
+              <div class="form-group col-lg-6 right my-3 ">
+                <select class="btn btn-select" required [(ngModel)]="MaquinaBase.setor_id_setor" name="setor" required
+                  ngModel #setor_id_setor="ngModel" [ngClass]="{'border-danger': att_selectValidation}"
+                  (change)="att_selectValidation = false">
+                  <option value="" disabled selected>Selecione uma Categoria</option>
+                  <option *ngFor="let C of Setor" value="{{C.id_setor}}">
+                    {{C.nome_setor}}
+                  </option>
+                </select>
+                <p *ngIf="att_selectValidation" class="text-danger">Preencha o campo</p>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-success"><i class="far fa-save"></i> Salvar</button>
+          </form>
+        </div>
+        <button class="btn btn-light col-lg-1" (click)="onDisplayUp()">
+          <i class="fas fa-angle-left"></i>Voltar
+        </button>
+      </div>
+    </div>
+  </section>
+  <!--/DIV CONTAINER-->
+</div>

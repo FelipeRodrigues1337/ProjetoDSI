@@ -1,0 +1,219 @@
+<div class="container">
+  <div class="row my-2">
+    <header class="col-lg-12 col-md-12 col-sm-12 left">
+      <h1>Registros</h1>
+    </header>
+  </div>
+  <!--CORPO/TABELA-->
+  <section *ngIf="!display && !displayUp">
+    <div class="row">
+      <div class="col left">
+        <button type="button" class="btn btn-success" (click)="onDisplayRegistro('e')" (click)="onDisplay()"><i
+            class="fas fa-user-plus "></i> Adicionar
+        </button>
+      </div>
+      <div class="col left">
+        <form autocomplete="off" class="form-inline search">
+          <input class="form-control mr-sm-2" [(ngModel)]="buscarSetor" name="color" id="color" list="colors"
+            placeholder="Setores"><i class="fas fa-search"></i>
+        </form>
+        <datalist id="colors">
+          <option *ngFor="let registro of Registro" value="{{registro.nomeSetor}}">
+            {{registro.nomeSetor}}
+          </option>
+        </datalist>
+      </div>
+      <div class="col right">
+        <form autocomplete="off" class="form-inline search" #p="ngForm" (ngSubmit)="onSubmit(p)">
+          <input class="form-control mr-sm-2" type="search" name="searcher" [(ngModel)]="buscarNome"
+            placeholder="Buscar Cliente" aria-label="Buscar" ngModel>
+          <i class="fas fa-search"></i>
+        </form>
+      </div>
+    </div>
+    <div class="row">
+      <table class="table col-lg-12 col-md-12 col-sm-12 table-dark my-1 tableStyle">
+        <thead>
+          <tr>
+            <th scope="col">Cliente</th>
+            <th scope="col">Setor</th>
+            <th scope="col">Identificador</th>
+            <th scope="col">Inf.Gabinete</th>
+            <th scope="col">Estado da Manutenção</th>
+            <th scope="col" class="">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let registro of Registro | searcher: buscarNome | searcher_mov: buscarSetor">
+            <td class="">{{ registro.cliente }}</td>
+            <td class="">{{ registro.nomeSetor }}</td>
+            <td class="">{{ registro.identificador }}</td>
+            <td class="">{{ registro.gabinete }}</td>
+            <td class="">{{ registro.estado_manutencao }}</td>
+            <td class="">
+              <div class="btn-group" role="group" aria-label="actions">
+                <button type="button" class="btn btn-light" (click)="onDisplayUp()" (click)="select(registro)"><i
+                    class="far fa-edit"></i></button>
+                <button type="button" class="btn btn-light" data-toggle="modal" (click)="selectMaquina(registro.identificador)" (click)="select(registro)"
+                  data-target="#inf"><i class="far fa-comment-alt"></i></button>
+                <button type="button" class="btn btn-light" data-toggle="modal" data-target="#delete"
+                  (click)="select(registro)"><i class="far fa-trash-alt"></i></button>
+                <button type="button" class="btn btn-light" (click)="select(registro)" (click)="gerarPDF(registro)">
+                  <i class="far fa-file-pdf"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <!--Modal Excluir-->
+  <div class="modal fade" role="dialog" id="delete">
+    <div class="modal-dialog modal-md" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Excluir Registro</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Tem certeza que deseja excluir este Registro?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="deleteRegistro()">Excluir</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" data-target="salvo">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--Modal de informação/Descrição do problema-->
+  <div class="modal" tabindex="-1" role="dialog" id="inf">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Descrição do problema.</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body col-lg-12 col-md-12 my-3">
+          <div class="form-group" *ngIf="registroBase">
+            <label for="Textarea2">Informações</label>
+            <textarea type="text" name="descricao" ngModel #descricao="ngModel" class="form-control" rows="14"
+              placeholder="{{registroBase.descricao_problema}}" disabled>
+            </textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--Display de Adição-->
+  <section *ngIf="display">
+    <div class="row">
+      <div class="col-lg-12 col-md-12 my-3">
+        <div class="card">
+          <form autocomplete="off" #p="ngForm" (ngSubmit)="onSubmit(p)">
+            <div class="modal-header displayColor">
+              <h5 class="modal-title">Adicionar Registro</h5>
+            </div>
+            <div class="modal-body" >
+              <div class="form-group col-lg-10 right">
+                <input class="form-control mr-sm-2 col-lg-6 right" [ngClass]="{'border-danger': identificador_valid}"
+                  (change)="identificador_valid = false" required ngModel [(ngModel)]="maquina" name="maquina"
+                  id="maquina" list="identificadores" placeholder="identificadores">
+                <datalist id="identificadores">
+                  <option *ngFor="let Maquinas of Maquina" value="{{Maquinas.id_maquina}}">
+                    {{Maquinas.gabinete}} com identificador {{Maquinas.identificador}}
+                  </option>
+                </datalist>
+                <p *ngIf="identificador_valid" class="text-danger">Preencha o campo</p>
+              </div>
+              <div class="form-group col-lg-10 right">
+                <select class="btn btn-select col-lg-6 right" [ngClass]="{'border-danger':estado_valid}"
+                  (change)="estado_valid = false" name="estado" required ngModel #estado="ngModel">
+                  <option value="" selected>Estado da manutenção.</option>
+                  <option value="Aguardando espaço na bancada de reparos">Aguardando espaço na bancada de reparos.
+                  </option>
+                  <option value="Em progresso (Estamos trabalhando neste computador)">Em progresso (Estamos trabalhando
+                    neste computador)</option>
+                  <option value="Concluído! (Será entregue em breve)">Concluído!(será entregue em breve) </option>
+                  <option value="Entregue (Devolvido ao setor de origem)">Entregue (Devolvido ao setor de origem)
+                  </option>
+                </select>
+                <p *ngIf="estado_valid" class="text-danger">Preencha o campo</p>
+              </div>
+              <div class="form-group col-lg-9">
+                <label for="Textarea1">Informações</label>
+                <textarea type="text" [(ngModel)]="textProblema" name="descricao" ngModel #descricao="ngModel" class="form-control" id="Textarea1"
+                  rows="4">
+                </textarea>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-success"><i class="far fa-save"></i> Salvar</button>
+          </form>
+        </div>
+        <button class="btn btn-light col-lg-1" (click)="onDisplay()">
+          <i class="fas fa-angle-left"></i>Voltar
+        </button>
+      </div>
+    </div>
+  </section>
+  <!--Display de Atualização-->
+  <section *ngIf="displayUp">
+    <div class="row">
+      <div class="col-lg-12 col-md-12 my-3">
+        <div class="card">
+          <form #b="ngForm" autocomplete="off" (ngSubmit)="updateRegistro(b)">
+            <div class="modal-header displayColor">
+              <h5 class="modal-title">Editar Maquina</h5>
+            </div>
+            <div class="modal-body" *ngIf="registroBase">
+              <div class="form-group col-lg-10 right">
+                <input class="form-control mr-sm-2 col-lg-6 right" [ngClass]="{'border-danger': identificador_valid}"
+                  (change)="identificador_valid = false" required ngModel #maquina [(ngModel)]="registroBase.id_maquina" name="maquina"
+                  id="maquina" list="identificadores" placeholder="identificadores">
+                <datalist id="identificadores">
+                  <option *ngFor="let Maquinas of Maquina" value="{{Maquinas.id_maquina}}">
+                    {{Maquinas.gabinete}} com identificador {{Maquinas.identificador}}
+                  </option>
+                </datalist>
+                <p *ngIf="identificador_valid" class="text-danger">Preencha o campo</p>
+              </div>
+              <div class="form-group col-lg-10 right">
+                <select class="btn btn-select col-lg-6 right" [ngClass]="{'border-danger': estado_valid}"
+                  [(ngModel)]="registroBase.estado_manutencao" (change)="estado_valid = false" name="estado" id="estado"
+                  required ngModel #estado="ngModel">
+                  <option value="" selected>Estado da manutenção.</option>
+                  <option value="Aguardando espaço na bancada de reparos">Aguardando espaço na bancada de reparos.
+                  </option>
+                  <option value="Em progresso (Estamos trabalhando neste computador)">Em progresso (Estamos trabalhando
+                    neste computador)</option>
+                  <option value="Concluído! (Será entregue em breve)">Concluído!(sera entregue em breve) </option>
+                  <option value="Entregue (Devolvido ao setor de origem)">Entregue (Devolvido ao setor de origem)
+                  </option>
+                </select>
+                <p *ngIf="estado_valid" class="text-danger">Preencha o campo</p>
+              </div>
+              <div class="form-group col-lg-9">
+                <label for="Textarea1">Informações</label>
+                <textarea type="text" [(ngModel)]="registroBase.descricao_problema" name="descricao" ngModel
+                  #descricao="ngModel" class="form-control" id="Textarea1" rows="4" placeholder="Descrição do problema">
+                </textarea>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-success"><i class="far fa-save"></i> Salvar</button>
+          </form>
+        </div>
+        <button class="btn btn-light col-lg-1" (click)="onDisplayUp()">
+          <i class="fas fa-angle-left"></i>Voltar
+        </button>
+      </div>
+    </div>
+  </section>
+  <!--/DIV CONTAINER-->
+</div>

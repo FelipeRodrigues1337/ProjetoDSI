@@ -1,0 +1,27 @@
+nav{
+    background-color: #343A40;
+    min-height: 5vh;
+}
+a.nav-link{
+    color: #ffffff;
+}
+span{
+    color: #ffffff;
+}
+li{
+    margin-left: 20pt;
+    margin-right: 20pt;
+}
+
+@media only screen and (max-width: 990px){
+    .dropdown-menu{
+        background-color: #343A40;
+        border: none;
+    }
+    a.dropdown-item{
+        color: #ffffff;
+    }
+}
+.container{
+    margin-top: 15pt;
+}
